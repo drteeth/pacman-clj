@@ -57,8 +57,30 @@
       ]
       (is (= 0 (:x p)))
       (is (= 1 (:y p)))
-      ))
-  )
+      )))
 
+(deftest eating-dots-tests
+  (testing "when pacman moves to a cell with a dot in it, he eats it."
+    (let [pos [1 0]
+          start-points (:points board)
+          b (-> board
+              (put-cell pos dot-cell)
+              (move :pacman :right))
+          p (:pacman b)
+          default-points (:points dot-cell)
+          end-points (:points b)]
+      (is (= 1 (:x p)))
+      (is (= empty-cell (get-cell b pos)))
+      (is (=
+            (+ start-points default-points)
+            end-points)
+          "checking that we incremented points after eating a thingy"))))
 
-
+(deftest pacman-wall-tests
+  (testing "hitting a wall")
+    (let [pos [1 0]
+          b (-> board
+                (put-cell pos wall-cell)
+                (move :pacman :right))
+          p (:pacman b)]
+      (is (= 0 (:x p)))))
